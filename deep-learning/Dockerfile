@@ -1,12 +1,15 @@
 ### Docker file for deep-learning
+# version 1.0.0
+
+### Base image
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+
+# Use bash to build this docker file
+SHELL ["/bin/bash", "-c"]
 
 ### Configuration
-# OS
-ARG DIST="ubuntu18.04"
-# CUDA
+# CUDA (must be the same as the base image's!)
 ARG CUDA_TOOLKIT_VERSION=10.1
-# cuDNN
-ARG CUDNN_VERSION=7
 # Node.js major version
 ARG NODE_VERSION=12
 # Anaconda3
@@ -15,11 +18,8 @@ ARG ANACONDA_VERSION=2020.02
 ARG PYTORCH_VERSION=1.5.0
 ARG TORCHVISION_VERSION=0.6.0
 # Tensorflow
-ARG TENSORFLOW_VERSION=2.2.0
-ARG TENSORBOARD_VERSION=2.2.1
-
-### Base image
-FROM nvidia/cuda:${CUDA_TOOLKIT_VERSION}-cudnn${CUDNN_VERSION}-devel-${DIST}
+ARG TENSORFLOW_VERSION=2.1.0
+ARG TENSORBOARD_VERSION=2.1.0
 
 ### User account in Docker image
 # username
@@ -74,12 +74,12 @@ USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
 RUN mkdir .ssh && echo -e "${USER_SSH_PUBKEY}" >> .ssh/authorized_keys && \
     wget https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh && \
-    sh ./Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh -b && \
-    . ./anaconda3/bin/activate && \
-    conda init && \
-    conda config --set auto_activate_base False
-RUN conda config --set auto_update_conda False && \
-    # Anaconda environment for deep learning
+    bash ./Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh -b && \
+    source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
+    conda init bash
+RUN source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
+    conda config --set auto_activate_base False && \
+    conda config --set auto_update_conda False && \
     conda create -n dl && \
     conda activate dl && \
     conda install -y \
@@ -88,11 +88,11 @@ RUN conda config --set auto_update_conda False && \
         cudatoolkit=${CUDA_TOOLKIT_VERSION} \
         tensorflow=${TENSORFLOW_VERSION} \
         tensorboard=${TENSORBOARD_VERSION} \
-        -c pytorch
+        -c pytorch -c defaults -c conda-forge
 
 # Create script for running jupyterlab server
 RUN echo "nohup jupyter-lab --ip=0.0.0.0 --no-browser --notebook-dir='/' --port 8888 &> .jupyterlab_log.txt < /dev/null &" > run_jupyterlab.sh && \
-    chmod +x run_jupyterlab
+    chmod +x run_jupyterlab.sh
 
 # Auto start sshd (port 22)
 USER root
