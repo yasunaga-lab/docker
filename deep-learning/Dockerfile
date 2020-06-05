@@ -1,5 +1,5 @@
 ### Docker file for deep-learning
-# version 1.0.0
+# version 1.1.0
 
 ### Base image
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
@@ -88,7 +88,7 @@ RUN wget https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x
 RUN source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
     conda config --set auto_activate_base False && \
     conda config --set auto_update_conda False && \
-    conda create -n dl && \
+    conda create -n dl python=3.7 && \
     conda activate dl && \
     conda install -y \
         pandas \
@@ -106,9 +106,11 @@ RUN source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
     conda install jupyterlab -c conda-forge && \
     pip install ipywidgets && \
     pip install cufflinks && \
-    jupyter lab --generate-config
+    jupyter lab --generate-config && \
+    jupyter lab build
 ## Install cryoDRGN
-RUN conda activate dl && \
+RUN source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
+    conda activate dl && \
     mkdir softwares && cd softwares && \
     git clone ${CRYODRGN_REPO} cryodrgn && \
     cd cryodrgn && \
