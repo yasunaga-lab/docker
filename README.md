@@ -2,7 +2,11 @@
 Repository for Dockerfiles
 
 ## cryoem
-* RELION and EMAN2
+* RELION
+* EMAN2
 
 ## deep-learning
-* Anaconda environment with pytorch, tensorflow, etc...
+* Anaconda environment
+* Pytorch
+* Tensorflow
+* cryoDRGN
