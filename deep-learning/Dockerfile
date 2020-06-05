@@ -20,6 +20,9 @@ ARG TORCHVISION_VERSION=0.6.0
 # Tensorflow
 ARG TENSORFLOW_VERSION=2.1.0
 ARG TENSORBOARD_VERSION=2.1.0
+# cryoDRGN
+ARG CRYODRGN_REPO="https://github.com/zhonge/cryodrgn.git"
+ARG CRYODRGN_VERSION=0.2.1
 
 ### User account in Docker image
 # username
@@ -46,7 +49,9 @@ RUN apt update && \
             vim \
             sudo \
             curl \
-            git
+            emacs \
+            git \
+            htop
 
 # Install Node.js for jupyterlab extension
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
@@ -72,29 +77,50 @@ RUN if [ "${VGLUSERS_GROUP_ID}" != "" ];then \
 # User environment
 USER ${USER_NAME}
 WORKDIR /home/${USER_NAME}
-RUN mkdir .ssh && echo -e "${USER_SSH_PUBKEY}" >> .ssh/authorized_keys && \
-    wget https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh && \
+## Register SSH key
+RUN mkdir .ssh && echo -e "${USER_SSH_PUBKEY}" >> .ssh/authorized_keys
+## Install Anaconda
+RUN wget https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh && \
     bash ./Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh -b && \
     source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
     conda init bash
+## Install python packages
 RUN source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
     conda config --set auto_activate_base False && \
     conda config --set auto_update_conda False && \
     conda create -n dl && \
     conda activate dl && \
     conda install -y \
+        pandas \
+        seaborn \
+        scikit-learn && \
+    conda install -y \
         pytorch=${PYTORCH_VERSION} \
         torchvision=${TORCHVISION_VERSION} \
         cudatoolkit=${CUDA_TOOLKIT_VERSION} \
+        -c pytorch && \
+    conda install -y \
         tensorflow=${TENSORFLOW_VERSION} \
-        tensorboard=${TENSORBOARD_VERSION} \
-        -c pytorch -c defaults -c conda-forge
+        tensorboard=${TENSORBOARD_VERSION} && \
+    conda install umap-learn -c conda-forge && \
+    conda install jupyterlab -c conda-forge && \
+    pip install ipywidgets && \
+    pip install cufflinks && \
+    jupyter lab --generate-config
+## Install cryoDRGN
+RUN conda activate dl && \
+    mkdir softwares && cd softwares && \
+    git clone ${CRYODRGN_REPO} cryodrgn && \
+    cd cryodrgn && \
+    git checkout ${CRYODRGN_VERSION} && \
+    python setup.py install
 
-# Create script for running jupyterlab server
+# Create a script for running jupyterlab server
 RUN echo "nohup jupyter-lab --ip=0.0.0.0 --no-browser --notebook-dir='/' --port 8888 &> .jupyterlab_log.txt < /dev/null &" > run_jupyterlab.sh && \
     chmod +x run_jupyterlab.sh
 
 # Auto start sshd (port 22)
 USER root
+WORKDIR /home/${USER_NAME}
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
