@@ -1,5 +1,5 @@
 ### Docker file for deep-learning
-# version 1.1.0
+# version 1.1.1
 
 ### Base image
 FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
