@@ -52,7 +52,8 @@ RUN apt update && \
             emacs \
             git \
             htop \
-            x11-apps
+            x11-apps \
+            eog
 
 # Install Node.js for jupyterlab extension
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
