@@ -22,7 +22,7 @@ ARG TENSORFLOW_VERSION=2.1.0
 ARG TENSORBOARD_VERSION=2.1.0
 # cryoDRGN
 ARG CRYODRGN_REPO="https://github.com/zhonge/cryodrgn.git"
-ARG CRYODRGN_VERSION=0.2.1
+ARG CRYODRGN_VERSION=0.2.1b
 
 ### User account in Docker image
 # username
