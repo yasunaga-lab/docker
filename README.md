@@ -10,3 +10,4 @@ Repository for Dockerfiles
 * Pytorch
 * Tensorflow
 * cryoDRGN
+* topaz
