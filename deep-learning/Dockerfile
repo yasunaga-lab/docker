@@ -106,6 +106,7 @@ RUN source /home/${USER_NAME}/anaconda3/etc/profile.d/conda.sh && \
         tensorboard=${TENSORBOARD_VERSION} && \
     conda install umap-learn -c conda-forge && \
     conda install jupyterlab -c conda-forge && \
+    conda install topaz -c tbepler && \
     pip install ipywidgets && \
     pip install cufflinks && \
     jupyter lab --generate-config && \
