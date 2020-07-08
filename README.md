@@ -1,5 +1,7 @@
 # docker
-Repository for Dockerfiles
+Repository for Dockerfiles.
+
+If any problems, questions or feature requests, please post an issue. Pull requests are also welcome.
 
 ## cryoem
 * RELION
@@ -11,3 +13,9 @@ Repository for Dockerfiles
 * Tensorflow
 * cryoDRGN
 * topaz
+
+## Roadmap
+* Integrate cryoem and deep-learning images into one.
+* Add other cryoem softwares such as cryosparc, xmipp, etc...
+* Orchestrate cryoem softwares with scipion.
+* Virtual desktop
