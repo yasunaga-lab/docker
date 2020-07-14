@@ -7,6 +7,9 @@ If any problems, questions or feature requests, please post an issue. Pull reque
 * RELION
 * EMAN2
 
+## cryosparc
+* Standalone install of cryoSPARC
+
 ## deep-learning
 * Anaconda environment
 * Pytorch
