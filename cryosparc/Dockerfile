@@ -25,6 +25,7 @@ ARG CSPARC_PASS=""
 ## cryoSPARC user name
 ARG CSPARC_NAME=""
 ## cryoSPARC SSD path (Leave this empty if not exist)
+## Replace slash with '\/' (Backslash escape)
 ARG CSPARC_SSDPATH=""
 
 ###############################################################################
@@ -77,7 +78,7 @@ WORKDIR /home/${USER_NAME}
 COPY --chown=${USER_NAME}:${GROUP_NAME} install_cryosparc2_standalone.sh .
 RUN sed -i \
     -e "s/USER_NAME/${USER_NAME}/g" \
-    -e "s/CSPARC_SSDPATH/\\${CSPARC_SSDPATH}/g" \
+    -e "s/CSPARC_SSDPATH/${CSPARC_SSDPATH}/g" \
     -e "s/CSPARC_LICENSE/${CSPARC_LICENSE}/g" \
     -e "s/CSPARC_EMAIL/${CSPARC_EMAIL}/g" \
     -e "s/CSPARC_PASS/${CSPARC_PASS}/g" \
