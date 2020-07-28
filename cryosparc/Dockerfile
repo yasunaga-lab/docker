@@ -89,6 +89,7 @@ RUN sed -i \
 # Auto start sshd (port 22)
 USER root
 EXPOSE 22
+EXPOSE 39000
 WORKDIR /home/${USER_NAME}
 RUN localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
 CMD ["/usr/sbin/sshd", "-D"]
