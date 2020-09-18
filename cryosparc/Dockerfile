@@ -31,8 +31,8 @@ ARG CSPARC_SSDPATH=""
 ###############################################################################
 
 # Copy files. These must NOT be symlinks, but actual tarballs!!
-COPY cryosparc2_master.tar.gz /tmp
-COPY cryosparc2_worker.tar.gz /tmp
+COPY ../cryosparc2_master.tar.gz /tmp
+COPY ../cryosparc2_worker.tar.gz /tmp
 
 # Install tools and dependencies
 RUN yum update -y && \
